@@ -8,8 +8,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#define STDOUT 1
-#define STDERR 2
 int wired_print(const char* string, const char* args[])
 {
     int argc = 0;
