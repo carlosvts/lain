@@ -2,7 +2,7 @@
 #include "io.h"
 #include "strings.h"
 
-#include <cstdio>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +22,7 @@ int wired_print(const char* string, const char* args[])
             if (args[argc] != NULL)
             {
                 //         1 
-                write(STDOUT_FILENO, &args[argc], sizeof(args[argc]));
+                write(STDOUT_FILENO, args[argc], sizeof(args[argc]));
                 argc++;
             }
             else 
@@ -32,6 +32,23 @@ int wired_print(const char* string, const char* args[])
             }
         }
     }
+    write(STDOUT_FILENO, "\n", stringlen("\n"));
+    return 0;
+}
+
+int wired_perror(const char *str)
+{
+    int err = errno;
+    int len = stringlen(str);
+    // writing the error code
+    char* errbuffer[12];
+    itoa(err, errbuffer);
+    
+    write(STDERR_FILENO, str, len);
+    write(STDERR_FILENO, ": [ERROR_CODE]: ", stringlen(": [ERROR_CODE]: "));
+    write(STDERR_FILENO, errbuffer, stringlen(errbuffer));
+    write(STDERR_FILENO, "\n", stringlen("\n"));
+    return 0
 }
 
 // All of the above functions should be REMADE to include MORE FEATURES
@@ -43,6 +60,7 @@ int open_file(const char* path)
     if (fd == -1)
     {
         wired_print("Unable to open file at path %s", args);
+        wired_perror(" ");
         return -1;
     }
     return fd;
@@ -62,6 +80,7 @@ long read_file(int fd, size_t amount)
     if (bytes == -1)
     {
         wired_print("Unable to read %s bytes from file", args);
+        wired_perror(" ");
         return -1;
     }
     return bytes;
@@ -80,7 +99,9 @@ long write_file(int fd, size_t data)
     
     if (bytes == -1) 
     {
-        return wired_print("Unable to write %s bytes from file", args);
+        wired_print("Unable to write %s bytes from file", args);
+        wired_perror(" ");
+        return -1;
     }
     return bytes;
 }
@@ -91,6 +112,8 @@ int close_file(int fd)
     int ok = close(fd);
     if (ok == -1) 
     {
-        return  wired_print("An error occurred while closing file", args);
+        wired_print("An error occurred while closing file", args);
+        wired_perror(" ");
+        return -1;
     }
 }
