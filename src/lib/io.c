@@ -114,4 +114,5 @@ int close_file(int fd)
         wired_perror(" ");
         return -1;
     }
+    return ok; 
 }
