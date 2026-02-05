@@ -1,12 +1,13 @@
 #include "strings.h"
 #include "io.h"
+#include <stdlib.h>
 #include <unistd.h>
 
 int main(int argc, char* argv[])
 {
-   int counter = 1;
-   char buffer[4096];
-   while (counter < argc)
+    int counter = 1;
+    char buffer[4096];
+    while (counter < argc)
     {
         int fd = lain::open_file(argv[counter]);
         int bytes_read = 0;
