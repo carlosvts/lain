@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 int wired_print(const char* string, const char* args[])
 {
@@ -97,4 +98,15 @@ int close_file(int fd)
         return -1;
     }
     return ok; 
+}
+
+int open_folder(const char* path, mode_t mode)
+{
+    int ok = mkdir(path, mode);
+    if (ok == -1)
+    {
+        wired_perror("Error while creating directory");
+        return -1;
+    }
+    return ok;
 }
