@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 int wired_print(const char* string, const char* args[])
@@ -39,14 +38,14 @@ int wired_perror(const char *str)
     int err = errno;
     int len = stringlen(str);
     // writing the error code
-    char* errbuffer[12];
+    char errbuffer[12];
     itoa(err, errbuffer);
     
     write(STDERR_FILENO, str, len);
     write(STDERR_FILENO, ": [ERROR_CODE]: ", stringlen(": [ERROR_CODE]: "));
     write(STDERR_FILENO, errbuffer, stringlen(errbuffer));
     write(STDERR_FILENO, "\n", stringlen("\n"));
-    return 0
+    return 0;
 }
 
 // All of the above functions should be REMADE to include MORE FEATURES
