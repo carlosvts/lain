@@ -5,8 +5,14 @@
 
 int main(int argc, char* argv[])
 {
-    int counter = 1;
     char buffer[4096];
+    if (argc == 1)
+    {
+        int bytes_read;
+        while ((bytes_read = lain::read_file(STDIN_FILENO, buffer, sizeof(buffer))) > 0)
+        lain::write_file(STDOUT_FILENO, buffer, bytes_read);
+    }
+    int counter = 1;
     while (counter < argc)
     {
         int fd = lain::open_file(argv[counter]);
