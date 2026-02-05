@@ -6,14 +6,17 @@ int main(int argc, char* argv[])
 {
    int counter = 1;
    char buffer[4096];
-   int ok = 1;
-   while (ok > 0)
+   while (counter < argc)
     {
         int fd = lain::open_file(argv[counter]);
-        ok = fd;
-        int bytes_read = lain::read_file(fd, buffer, sizeof(buffer));
-        lain::write_file(STDOUT_FILENO, buffer, bytes_read);
+        int bytes_read = 0;
+        // loop 4kb of reading  
+        while ((bytes_read = lain::read_file(fd, buffer, sizeof(buffer))) > 0)
+        {
+            lain::write_file(STDOUT_FILENO, buffer, bytes_read);
+        }
+        lain::close_file(fd);
         counter++;
     }
-    return 1;
+    return 0;
 }
