@@ -63,17 +63,11 @@ int open_file(const char* path)
     return fd;
 }
 
-long read_file(int fd, size_t amount)
+long read_file(int fd, void* buf, size_t amount)
 {
-    char bytes_to_read[12];
-    itoa(amount, bytes_to_read);
+    const char* args[] = {buf, NULL};
     
-    const char* ptr = bytes_to_read;
-    const char* args[] = {ptr, NULL};
-    
-    char buffer[sizeof(amount)];
-    int bytes = read(fd, buffer, amount);
-    
+    int bytes = read(fd, buf, amount);
     if (bytes == -1)
     {
         wired_print("Unable to read %s bytes from file", args);
@@ -83,17 +77,11 @@ long read_file(int fd, size_t amount)
     return bytes;
 }
 
-long write_file(int fd, size_t data)
+long write_file(int fd, const void* buf, size_t data)
 {
-    char buffer[sizeof(data)];
-    char bytes_to_write[12];
-    itoa(data, bytes_to_write);
+    const char* args[] = {buf, NULL};
     
-    const char* ptr = bytes_to_write;
-    const char* args[] = {ptr, NULL};
-    
-    int bytes = write(fd, buffer, data);
-    
+    int bytes = write(fd, buf, data);   
     if (bytes == -1) 
     {
         wired_print("Unable to write %s bytes from file", args);
