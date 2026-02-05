@@ -2,6 +2,7 @@
 #include "io.h"
 #include "strings.h"
 
+#include <cerrno>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -105,8 +106,32 @@ int open_folder(const char* path, mode_t mode)
     int ok = mkdir(path, mode);
     if (ok == -1)
     {
+        if (errno == EEXIST)
+        {
+            wired_perror("Folder already exists");
+            return -1;
+        }
         wired_perror("Error while creating directory");
         return -1;
     }
     return ok;
+}
+
+// path should be the full path
+int ocreat(const char* path)
+{
+    int fd = open(path, O_WRONLY | O_CREAT, 0644);
+    const char* args[] = {path, NULL};
+    if (fd == -1)
+    {
+        wired_print("At path %s: ", args);
+        wired_perror("    Unable to open\n");
+        return -1;
+    }
+    return fd;
+}
+
+int isDir(const char* path)
+{
+
 }
