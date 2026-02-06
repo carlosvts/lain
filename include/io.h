@@ -9,6 +9,7 @@ int close_file(int fd);
 int open_folder(const char* path, mode_t mode);
 int ocreat(const char* path);
 int isDir(const char* path);
+int fileExists(const char* path);
 
 LAIN_END
 

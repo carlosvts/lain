@@ -133,5 +133,22 @@ int ocreat(const char* path)
 
 int isDir(const char* path)
 {
-    
+    // gets metadata from file
+    struct stat path_stat;
+    if (stat(path, &path_stat) != 0)
+    {
+        return 0; 
+    }
+
+    return S_ISDIR(path_stat.st_mode);
+}
+
+int fileExists(const char* path)
+{
+    struct stat file;
+    if (stat(path, &file) == 0) 
+    {
+        return 1;
+    }
+    return 0;
 }
