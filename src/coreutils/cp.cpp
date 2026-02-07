@@ -7,6 +7,7 @@ int main(int argc, const char* argv[])
     // copy src from dest, if more than one src, copy into folder
     char buffer[4096];
     int bytes_read = 1;
+    std::string final_path = argv[argc - 1];
     
     // More than 3 argc, i.e, need to create a folder
     if (argc > 3)
@@ -34,8 +35,10 @@ int main(int argc, const char* argv[])
                 continue;
             }
 
-            std::string final_path = argv[argc -1] + "/" + argv[i];
-            int dst = lain::ocreat(final_path.c_str());
+            std::string path = argv[argc - 1];
+            path += "/" + std::string(argv[i]);
+            
+            int dst = lain::ocreat(path.c_str());
             while ((bytes_read = lain::read_file(fd, buffer, sizeof(buffer))) > 0) 
             {
                 lain::write_file(dst, buffer, bytes_read);
@@ -48,28 +51,23 @@ int main(int argc, const char* argv[])
     {
         // Copy src to dst
         int src = lain::open_file(argv[1]);
+        if (src == -1) return 1;
         
-        if (!lain::isDir(argv[argc - 1]))
+        if (lain::isDir(argv[argc - 1]))
         {
-            int dst = lain::open_file(argv[argc - 1]);
-            if (dst == -1)
-            {
-                dst = lain::ocreat(argv[argc - 1]);
-            }
+            final_path += "/" + std::string(argv[1]);
+        }
+ 
+        int dst = lain::ocreat(final_path.c_str());
+        if (dst != -1)
+        {
             while ((bytes_read = lain::read_file(src, buffer, sizeof(buffer))) > 0)
             {
                 lain::write_file(dst, buffer, bytes_read);
             }
-            lain::close_file(src);
             lain::close_file(dst);
         }
-        else 
-        {
-            if (lain::fileExists(argv[argc - 1]))
-            {
-
-            }
-        } 
+        lain::close_file(src);
     }
     return 0;
 }

@@ -2,7 +2,6 @@
 #include "io.h"
 #include "strings.h"
 
-#include <cerrno>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -120,7 +119,8 @@ int open_folder(const char* path, mode_t mode)
 // path should be the full path
 int ocreat(const char* path)
 {
-    int fd = open(path, O_WRONLY | O_CREAT, 0644);
+    // 0644 permissions rw-r--r--
+    int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     const char* args[] = {path, NULL};
     if (fd == -1)
     {
