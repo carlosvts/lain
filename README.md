@@ -8,6 +8,7 @@ A personal laboratory to explore systems
 from first principles.
 
 Its not a wrapper nor a framework
+
 It is a reconstruction of fundamental Unix behavior,
 with strict architectural separation between core logic and interface.
 
@@ -142,4 +143,5 @@ The objective is to:
 
 Every component is written intentionally.
 Functionality is added only when necessary.
+
 
