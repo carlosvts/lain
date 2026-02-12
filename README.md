@@ -2,12 +2,12 @@
 
 > Present day, present time
 
-A personal laboratory to explore systems
+A personal Unix systems laboratory.
 
 `lain` reimplements parts of the C standard library and GNU coreutils
 from first principles.
 
-Its not a wrapper nor a framework
+It is neither a wrapper nor a framework.
 
 It is a reconstruction of fundamental Unix behavior,
 with strict architectural separation between core logic and interface.
@@ -17,7 +17,8 @@ with strict architectural separation between core logic and interface.
 - Rebuild fundamental routines manually.
 - Separate C core from C++ interface.
 - Keep implementations explicit.
-- Use as much as possible to understand how `libc` and GNU coreutils works
+- Use minimal external abstractions to understand how `libc` and GNU coreutils work.
+
 
 ## Architecture
 
@@ -45,6 +46,18 @@ CLI Layer
 - Reimplementation of Unix utilities
 - Built strictly on top of the library layer
 
+---
+
+## Constraints
+
+- POSIX-oriented
+- Linux environment assumed
+- No Windows support planned
+- No reliance on high-level C++ standard abstractions
+- Manual memory and descriptor handling in the core layer
+
+
+---
 
 ## Implemented Interfaces
 
@@ -150,5 +163,6 @@ Every component is written intentionally.
 Functionality is added only when necessary.
 
 
-
-
+Tested on a POSIX-compliant Linux environment.
+Currently, this project does not include a license. (It will be added soon)
+Feel free to explore and experiment with it.
