@@ -164,5 +164,8 @@ Functionality is added only when necessary.
 
 
 Tested on a POSIX-compliant Linux environment.
+
 Currently, this project does not include a license. (It will be added soon)
+
 Feel free to explore and experiment with it.
+
