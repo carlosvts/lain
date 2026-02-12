@@ -85,17 +85,19 @@ Currently implemented:
 
 Each utility is implemented in C++ and depends strictly on the C core layer.
 
-Example — simplified `cat` flow:
+Example — simplified `cat` loop:
 
 ```cpp
-int fd = lain::open_file(argv[1]);
+char buffer[4096];
+int bytes_read;
 
-char buffer[1024];
-long bytes = lain::read_file(fd, buffer, sizeof(buffer));
-
-lain::write_file(1, buffer, bytes);
-lain::close_file(fd);
+while ((bytes_read = lain::read_file(STDIN_FILENO, buffer, sizeof(buffer))) > 0)
+    lain::write_file(STDOUT_FILENO, buffer, bytes_read);
 ```
+
+The utility reads from standard input and writes directly to standard output
+using the core descriptor-based interface.
+
 
 The CLI layer does not access system calls directly.
 All interaction goes through the library interface.
@@ -143,5 +145,6 @@ The objective is to:
 
 Every component is written intentionally.
 Functionality is added only when necessary.
+
 
 
