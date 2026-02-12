@@ -88,6 +88,9 @@ Each utility is implemented in C++ and depends strictly on the C core layer.
 Example — simplified `cat` loop:
 
 ```cpp
+#include "strings.h"
+#include "io.h"
+
 char buffer[4096];
 int bytes_read;
 
@@ -145,6 +148,7 @@ The objective is to:
 
 Every component is written intentionally.
 Functionality is added only when necessary.
+
 
 
 
