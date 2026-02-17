@@ -1,5 +1,4 @@
-#include "io.h"
-#include "strings.h"
+#include <lain/lain.hpp>
 #include <unistd.h>
 
 int main(int argc, const char* argv[])

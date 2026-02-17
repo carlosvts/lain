@@ -1,6 +1,6 @@
 #include "strings.h"
 
-void reverse(char* str, int len)
+void lain_reverse(char* str, int len)
 {
     // technically we need to reverse only half of the string
     for (int i = 0, j = len - 1; i < j; i++, j--)
@@ -11,7 +11,7 @@ void reverse(char* str, int len)
     }
 }
 
-void itoa(int num, char* str)
+void lain_itoa(int num, char* str)
 {
     int i = 0;
     int is_negative = 0;
@@ -44,10 +44,10 @@ void itoa(int num, char* str)
     }
     
     str[i] = '\0';
-    reverse(str, i);
+    lain_reverse(str, i);
 }
 
-unsigned long stringlen(const char* string)
+unsigned long lain_stringlen(const char* string)
 {
     unsigned long len = 0;
     while (string[len] != '\0')

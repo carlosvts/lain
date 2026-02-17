@@ -1,13 +1,13 @@
-#include <lain/lain.h>
-#include <lain/io.h>
-#include <lain/strings.h>
+#include <lain/c/lain.h>
+#include <lain/c/io.h>
+#include <lain/c/strings.h>
 
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 
-int wired_print(const char* string, const char* args[])
+int lain_wired_print(const char* string, const char* args[])
 {
     int argc = 0;
 
@@ -35,7 +35,7 @@ int wired_print(const char* string, const char* args[])
     return 0;
 }
 
-int wired_perror(const char* str)
+int lain_wired_perror(const char* str)
 {
     int err = errno;
     int len = stringlen(str);
@@ -50,87 +50,87 @@ int wired_perror(const char* str)
 
 // All of the above functions should be REMADE to include MORE FEATURES
 
-int open_file(const char* path)
+int lain_open_file(const char* path)
 {
     int fd = open(path, O_RDONLY, 0);
     const char* args[] = {path, NULL};
     if (fd == -1)
     {
-        wired_print("At file %s: ", args);
-        wired_perror("    Unable to open file\n");
+        lain_wired_print("At file %s: ", args);
+        lain_wired_perror("    Unable to open file\n");
         return -1;
     }
     return fd;
 }
 
-long read_file(int fd, void* buf, size_t amount)
+long lain_read_file(int fd, void* buf, size_t amount)
 {   
     int bytes = read(fd, buf, amount);
     if (bytes == -1)
     {
-        wired_perror("    An error occurred while reading\n");
+        lain_wired_perror("    An error occurred while reading\n");
         return -1;
     }
     return bytes;
 }
 
-long write_file(int fd, const void* buf, size_t data)
+long lain_write_file(int fd, const void* buf, size_t data)
 {
     const char* args[] = {buf, NULL};
     
     int bytes = write(fd, buf, data);   
     if (bytes == -1) 
     {
-        wired_print("Writing  %s bytes to file", args);
-        wired_perror("    Unable to write to file");
+        lain_wired_print("Writing  %s bytes to file", args);
+        lain_wired_perror("    Unable to write to file");
         return -1;
     }
     return bytes;
 }
 
-int close_file(int fd)
+int lain_close_file(int fd)
 {
     int ok = close(fd);
     if (ok == -1) 
     {
-        wired_perror("    An error ocurred while closing this file");
+        lain_wired_perror("    An error ocurred while closing this file");
         return -1;
     }
     return ok; 
 }
 
-int open_folder(const char* path, mode_t mode)
+int lain_open_folder(const char* path, mode_t mode)
 {
     int ok = mkdir(path, mode);
     if (ok == -1)
     {
         if (errno == EEXIST)
         {
-            wired_perror("Folder already exists");
+            lain_wired_perror("Folder already exists");
             return -1;
         }
-        wired_perror("Error while creating directory");
+        lain_wired_perror("Error while creating directory");
         return -1;
     }
     return ok;
 }
 
 // path should be the full path
-int ocreat(const char* path)
+int lain_ocreat(const char* path)
 {
     // 0644 permissions rw-r--r--
     int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     const char* args[] = {path, NULL};
     if (fd == -1)
     {
-        wired_print("At path %s: ", args);
-        wired_perror("    Unable to open\n");
+        lain_wired_print("At path %s: ", args);
+        lain_wired_perror("    Unable to open\n");
         return -1;
     }
     return fd;
 }
 
-int isDir(const char* path)
+int lain_is_dir(const char* path)
 {
     // gets metadata from file
     struct stat path_stat;
@@ -142,7 +142,7 @@ int isDir(const char* path)
     return S_ISDIR(path_stat.st_mode);
 }
 
-int fileExists(const char* path)
+int lain_file_exists(const char* path)
 {
     struct stat file;
     if (stat(path, &file) == 0) 

@@ -1,5 +1,4 @@
-#include "io.h"
-#include "strings.h"
+#include <lain/lain.hpp>
 #include <string>
 
 int main(int argc, const char* argv[])
@@ -15,7 +14,7 @@ int main(int argc, const char* argv[])
         // read and write 
         mode_t mode = 0755;
         // check if folder already exists
-        int folder_check = lain::isDir(argv[argc - 1]);
+        int folder_check = lain::is_dir(argv[argc - 1]);
         int folder;
         if (!folder_check)
         {
@@ -53,7 +52,7 @@ int main(int argc, const char* argv[])
         int src = lain::open_file(argv[1]);
         if (src == -1) return 1;
         
-        if (lain::isDir(argv[argc - 1]))
+        if (lain::is_dir(argv[argc - 1]))
         {
             final_path += "/" + std::string(argv[1]);
         }
