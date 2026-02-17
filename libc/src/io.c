@@ -1,11 +1,10 @@
-#include "lain.h"
-#include "io.h"
-#include "strings.h"
+#include <lain/lain.h>
+#include <lain/io.h>
+#include <lain/strings.h>
 
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/stat.h>
 
 int wired_print(const char* string, const char* args[])
