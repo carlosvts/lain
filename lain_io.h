@@ -7,17 +7,18 @@
 #include <string.h>
 #include <unistd.h>
 
-static inline int lain_print(const char *format, const char *args[])
+static inline i32 lain_print(String format, const String args[])
 {
-    int argc = 0;
+    usize argc = 0;
 
-    for (int i = 0; format[i] != '\0'; i++)
+    for (usize i = 0; i < format.len; i++)
     {
-        if (format[i] == '%' && format[i + 1] == 's')
+        if (format.data[i] == '%' && i + 1 < format.len &&
+            format.data[i + 1] == 's')
         {
-            if (args[argc] != NULL)
+            if (args[argc].data != NULL)
             {
-                write(STDOUT_FILENO, args[argc], lain_stringlen(args[argc]));
+                write(STDOUT_FILENO, args[argc].data, args[argc].len);
 
                 argc++;
             }
@@ -26,7 +27,8 @@ static inline int lain_print(const char *format, const char *args[])
             continue;
         }
 
-        char c = format[i];
+        char c = format.data[i];
+
         write(STDOUT_FILENO, &c, sizeof(c));
     }
 
@@ -35,9 +37,9 @@ static inline int lain_print(const char *format, const char *args[])
     return 0;
 }
 
-static inline int lain_perror(const char *message)
+static inline i32 lain_perror(String message)
 {
-    write(STDERR_FILENO, message, lain_stringlen(message));
+    write(STDERR_FILENO, message.data, message.len);
 
     write(STDERR_FILENO, ": ", 2);
 
@@ -50,4 +52,4 @@ static inline int lain_perror(const char *message)
     return -1;
 }
 
-#endif
+#endif /* LAIN_IO_H */
