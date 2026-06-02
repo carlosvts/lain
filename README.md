@@ -1,174 +1,155 @@
 # lain
 
-> Present day, present time
+> Present day, present time.
 
-A personal Unix systems laboratory.
+A lightweight header-only C library inspired by low-level Unix programming
+and some of the ergonomic ideas found in modern languages such as Rust.
 
-`lain` reimplements parts of the C standard library and GNU coreutils
-from first principles.
+`lain` provides small, composable modules for strings, file handling,
+I/O, containers, and other foundational utilities while remaining
+simple, explicit, and close to the operating system.
 
-It is neither a wrapper nor a framework.
+The goal is not to replace libc.
 
-It is a reconstruction of fundamental Unix behavior,
-with strict architectural separation between core logic and interface.
-
-## Design Principles
-
-- Rebuild fundamental routines manually.
-- Separate C core from C++ interface.
-- Keep implementations explicit.
-- Use minimal external abstractions to understand how `libc` and GNU coreutils work.
-
-
-## Architecture
-
-The project enforces a layered model:
-
-```
-include/      → Public headers
-src/
- ├── lib/         → Core implementations (C)
- └── coreutils/   → CLI utilities (C++)
-```
-
-Layer breakdown:
-
-C Core (`lib/`)
-- Low-level string handling
-- File descriptors
-- Direct system interaction
-
-C++ Layer
-- Namespaced interface (`lain::`)
-- Structured exposure of C core functions
-
-CLI Layer
-- Reimplementation of Unix utilities
-- Built strictly on top of the library layer
+The goal is to explore how such abstractions can be built from first
+principles while preserving the simplicity and transparency of C.
 
 ---
 
-## Constraints
+## Philosophy
 
-- POSIX-oriented
-- Linux environment assumed
-- No Windows support planned
-- No reliance on high-level C++ standard abstractions
-- Manual memory and descriptor handling in the core layer
+`lain` follows a few simple principles:
 
+- Header-only whenever practical.
+- Explicit behavior over hidden magic.
+- Minimal dependencies.
+- POSIX-first design.
+- Small, composable modules.
+- Learn by rebuilding fundamental abstractions.
 
----
-
-## Implemented Interfaces
-
-### String & Utility
-
-- `unsigned long stringlen(const char* string);`
-- `void reverse(char* str, int len);`
-- `void itoa(int num, char* str);`
-- `int wired_print(const char* buffer, const char* args[]);`
-- `int wired_perror(const char* str);`
-
-These functions operate directly on raw buffers and avoid hidden allocation
-or implicit behavior.
-
-### File & Descriptor I/O
-
-- `int open_file(const char* path);`
-- `long read_file(int fd, void* buf, size_t amount);`
-- `long write_file(int fd, const void* buf, size_t data);`
-- `int close_file(int fd);`
-- `int open_folder(const char* path, mode_t mode);`
-- `int ocreat(const char* path);`
-- `int isDir(const char* path);`
-- `int fileExists(const char* path);`
-
-All file operations are built around file descriptors and system calls.
-No high-level stream abstractions are used.
+The project is heavily inspired by Unix design and by the ergonomics
+of modern systems languages, particularly Rust.
 
 ---
 
-## Coreutils
+## Current Modules
 
-Currently implemented:
+### `lain.h`
 
-- `echo`
-- `cat`
-- `cp`
+Fundamental types used throughout the library.
 
-Each utility is implemented in C++ and depends strictly on the C core layer.
+```c
+i8   i16   i32   i64
+u8   u16   u32   u64
 
-Example — simplified `cat` loop:
+f32  f64
 
-```cpp
-#include "strings.h"
-#include "io.h"
-
-char buffer[4096];
-int bytes_read;
-
-while ((bytes_read = lain::read_file(STDIN_FILENO, buffer, sizeof(buffer))) > 0)
-    lain::write_file(STDOUT_FILENO, buffer, bytes_read);
+usize 
+isize
 ```
 
-The utility reads from standard input and writes directly to standard output
-using the core descriptor-based interface.
+### `lain_strings.h`
 
+Basic string utilities and string abstractions.
 
-The CLI layer does not access system calls directly.
-All interaction goes through the library interface.
-
----
-
-## Roadmap
-
-- Argument and flag parsing system
-- Standardized error handling model
-- Directory traversal utilities
-- Pipe support
-- Static library target
-- Unit testing
-- Behavior comparison against glibc/coreutils
-
-The roadmap focuses on structural completeness,
-not feature breadth.
-
----
-
-## Build
-
-
-A proper build system will be added in the future.  
-For now, you can compile the project manually using `g++`.
-
-Example:
-
+```c
+String
+lain_string()
+lain_stringlen()
+lain_reverse()
+lain_itoa()
 ```
-g++ src/coreutils/*.cpp src/lib/*.c -o lain
+
+### `lain_io.h`
+
+Low-level output and error handling.
+
+```c
+lain_print()
+lain_perror()
 ```
-This produces a single executable containing the available utilities.
 
-## Scope
+### `lain_fs.h`
 
-`lain` is not intended to replace libc (nor be better).
+Filesystem and file descriptor helpers.
 
-The objective is to:
-
-- Understand internal behavior
-- Control low-level execution
-- Study Unix design decisions
-- Explore architectural separation
-
-Every component is written intentionally.
-Functionality is added only when necessary.
+```c
+lain_open()
+lain_create()
+lain_read()
+lain_write()
+lain_close()
+lain_mkdir()
+lain_exists()
+lain_is_dir()
+```
 
 ---
 
+## Example
 
-Tested on a POSIX-compliant Linux environment.
+```c
+#include <lain/lain_fs.h>
 
-Currently, this project does not include a license. (It will be added soon)
+int main(void)
+{
+    i32 fd = lain_open(
+        lain_string("hello.txt"));
 
-Feel free to explore and experiment with it.
+    if (fd == -1)
+    {
+        return 1;
+    }
 
+    lain_close(fd);
 
+    return 0;
+}
+```
+
+---
+
+## Planned modules:
+
+- Dynamic vectors (`Vec`)
+- String builders
+- Iterators
+- Result types
+- Option types
+- Argument parsing
+- Directory traversal
+- Logging utilities
+- Memory utilities
+
+The objective is to provide useful abstractions without hiding how the
+underlying system works.
+
+---
+
+## Non-Goals
+
+`lain` is not:
+
+- A replacement for libc
+- A framework
+- A language extension
+- A Rust clone
+
+The project borrows ideas where they are useful while remaining
+idiomatic C.
+
+---
+
+## Platform
+
+Currently developed and tested on:
+
+- Linux
+- POSIX-compatible environments
+
+---
+
+## Status
+
+The project is in an early refactoring stage and the API is expected
+to evolve significantly.
