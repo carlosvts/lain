@@ -1,9 +1,17 @@
 #ifndef LAIN_STRINGS_H
 #define LAIN_STRINGS_H
 
-static inline unsigned long lain_stringlen(const char *string)
+#include "lain.h"
+
+typedef struct
 {
-    unsigned long len = 0;
+    char *data;
+    usize len;
+} String;
+
+static inline usize lain_stringlen(const char *string)
+{
+    usize len = 0;
 
     while (string[len] != '\0')
     {
@@ -13,9 +21,19 @@ static inline unsigned long lain_stringlen(const char *string)
     return len;
 }
 
-static inline void lain_reverse(char *str, int len)
+static inline String lain_string(char *str)
 {
-    for (int i = 0, j = len - 1; i < j; i++, j--)
+    String s = {
+        .data = str,
+        .len = lain_stringlen(str),
+    };
+
+    return s;
+}
+
+static inline void lain_reverse(char *str, usize len)
+{
+    for (usize i = 0, j = len - 1; i < j; i++, j--)
     {
         char tmp = str[i];
         str[i] = str[j];
@@ -23,10 +41,10 @@ static inline void lain_reverse(char *str, int len)
     }
 }
 
-static inline void lain_itoa(int num, char *str)
+static inline void lain_itoa(i32 num, char *str)
 {
-    int i = 0;
-    int is_negative = 0;
+    usize i = 0;
+    bool is_negative = false;
 
     if (num == 0)
     {
@@ -37,13 +55,13 @@ static inline void lain_itoa(int num, char *str)
 
     if (num < 0)
     {
-        is_negative = 1;
+        is_negative = true;
         num = -num;
     }
 
     while (num != 0)
     {
-        int rem = num % 10;
+        i32 rem = num % 10;
         str[i++] = rem + '0';
         num /= 10;
     }
@@ -58,4 +76,4 @@ static inline void lain_itoa(int num, char *str)
     lain_reverse(str, i);
 }
 
-#endif /* LAIN_C_STRINGS_H */
+#endif /* LAIN_STRINGS_H */
